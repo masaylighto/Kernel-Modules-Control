@@ -14,7 +14,7 @@ void LoadMainWindow(GtkBuilder * Builder)
 some widget are gonna be used from different method so here we gonna get them out the GtkBuilder and set them to their Global Variable
 */
 void SetWidgetToGlobal(GtkBuilder * Builder){
-
+ //   ModulesContainer  = GetWidget(Builder,"ModulesContainer");
 }
 /*
 get all the widgets from GtkBuilder and map them to their signal 

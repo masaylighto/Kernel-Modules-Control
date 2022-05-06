@@ -3,7 +3,10 @@
 #ifndef H_MainWindow
 #define H_MainWindow
 
-GtkWidget * ModulesContainer;
+/*
+Repersent the box in the ui that will hold the Modules 
+*/
+//GtkWidget * ModulesContainer;
 
 /*
 this method load the first Ui file which reperesent the main window
