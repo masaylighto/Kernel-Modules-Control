@@ -31,4 +31,5 @@ The Unload btn Signal
 this method will be fired when the Unload btn Get Clicked
 */
 void Unload(GtkWidget *widget,gpointer data);
+GtkFileChooser* CreateFileDialog();
 #endif

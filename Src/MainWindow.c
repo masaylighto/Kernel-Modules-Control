@@ -5,16 +5,16 @@
 Repersent the box in the ui that will hold the Modules 
 */
 GtkGrid * ModulesContainer;
-
+GtkWindow *MainWindow;
 void LoadMainWindow(GtkBuilder * Builder)
 {
     LoadGladeFile(Builder,"Ui/MainWindow.glade" )    ;// load the xml file we want into the Builder
     GtkCssProvider* Css= LoadCssFile("Ui/Css/MainWindow.css");  //Load the Css File
     ApplyCss(Css);//apply the Css File
-    GtkWidget * Window  = GetWidget(Builder,"TopWindow");//get The window the declared inside of the glade file  
+    MainWindow  = GetWidget(Builder,"TopWindow");//get The window the declared inside of the glade file  
     MapWidgetsToSignals(Builder); //get all the widgets from GtkBuilder and map them to their signal 
     SetWidgetToGlobal(Builder);
-    gtk_widget_show_all (Window);//Show The window
+    gtk_widget_show_all (MainWindow);//Show The window
     GetAndDisplayKernelModule();
 }
 /*
@@ -132,6 +132,28 @@ The Add btn Signal
 this method will be fired when the add btn Get Clicked
 */
 void AddBtnClicked(GtkWidget *widget,gpointer data)
-{
-    g_print("Button Clicked\n");
+{    
+    GtkFileChooser* Chooser= CreateFileDialog();
+   //show it and return the result
+    const gint Result= gtk_dialog_run(GTK_DIALOG(Chooser));
+    if(GTK_RESPONSE_ACCEPT!=Result){
+        gtk_widget_destroy(Chooser);
+        return;
+    }
+    char * FileName =gtk_file_chooser_get_filename(Chooser);
+    printf("\n %s \n",FileName);
+    gtk_widget_destroy(Chooser);
+}
+/*
+Create GtkFileChooser to browse for file
+*/
+GtkFileChooser* CreateFileDialog(){
+    //Create GtkFileChooser to browse for file
+    GtkFileChooser* Chooser= GTK_FILE_CHOOSER(gtk_file_chooser_dialog_new("Choose module",MainWindow,GTK_FILE_CHOOSER_ACTION_OPEN,"Choose",GTK_RESPONSE_ACCEPT,"Close",GTK_RESPONSE_CANCEL,NULL));
+    //Create File Fillter to prevent user from loading file other than the module
+    GtkFileFilter *Filter= gtk_file_filter_new();
+    gtk_file_filter_add_pattern (Filter, "*.ko");  
+    gtk_file_filter_set_name(Filter,"Kernel Module");
+    gtk_file_chooser_add_filter(Chooser,Filter);    
+    return Chooser;
 }
