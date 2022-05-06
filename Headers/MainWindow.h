@@ -4,11 +4,6 @@
 #define H_MainWindow
 
 /*
-Repersent the box in the ui that will hold the Modules 
-*/
-//GtkWidget * ModulesContainer;
-
-/*
 this method load the first Ui file which reperesent the main window
 */
 void LoadMainWindow(GtkBuilder * Builder);
@@ -25,4 +20,8 @@ void AddBtnClicked(GtkWidget *widget,gpointer data);
 some widget are gonna be used from different method so here we gonna get them out the GtkBuilder and set them to their Global Variable
 */
 void SetWidgetToGlobal(GtkBuilder * Builder);
+/*
+this method will Create A Widget That Reperesent THe Kernal Module
+*/
+GtkGrid* CreateKernelModuleRow();
 #endif
