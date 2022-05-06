@@ -1,0 +1,23 @@
+ 
+.White{
+    background-color: white;
+}
+.Addbtn{
+    background-color: rgb(96, 181, 255);
+    border:none;
+}
+.ModulesList{
+background-color: #f5f5f5;
+border:none;
+
+}
+.UnloadBtn{
+    background-color: rgb(255, 125, 96);
+    border:none;
+}
+.Row{
+    border: none;
+    border-radius: 4px;
+    padding: 5px;
+    box-shadow: 1px 1px 5px 10px rgba(0, 0, 0, 0.079);
+}
