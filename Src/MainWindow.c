@@ -31,12 +31,15 @@ void GetAndDisplayKernelModule(){
     while ( getline(&line, &len, modulesfile) != -1) {
         //strtok to remove every thing after space then insert it to view through InsertKernelModule
         InsertKernelModule(strtok(line," "));
+    
     }
     
     //close file object
     fclose(modulesfile);
     //free the line
+    if(line!=NULL){
     free (line);
+    }
 }
 /*
 some widget are gonna be used from different method so here we gonna get them out the GtkBuilder and set them to their Global Variable
@@ -52,6 +55,7 @@ void InsertKernelModule(const char * ModuleName){
     GtkGrid *Row = CreateKernelModuleRow();
     //Set Module Info into it
     SetModuleName(Row,ModuleName);
+    ConnectUnloadSignal(Row,ModuleName,NextGridRow);
     //add Row into Grid
     gtk_grid_attach(ModulesContainer,Row,0,NextGridRow++,1,1);
     
@@ -64,6 +68,41 @@ void SetModuleName(GtkGrid* Box ,const char * Name){
   GtkLabel *Label=    gtk_grid_get_child_at(Box,0,0);  
   //set the label name
   gtk_label_set_label(Label,Name);
+}
+
+typedef struct{
+ char *Name;
+ int Position;
+} ModuleRowInfo;
+/*
+this method used to apply module name to the Row
+*/
+void ConnectUnloadSignal(GtkGrid* Box,const char * Name,int Position){
+    //get the label from the grid
+     GtkButton *Unloadbtn=    gtk_grid_get_child_at(Box,2,0);
+  
+     //we will take the size of the string name then create a new heep allocated string with calloc 
+     //then copy the data from the Name to it so we can pass it pointer to the even so it can be used from the event
+     // and we do that cause if we traced  Name back to its origin we will found our self 
+     //using the same pointer for every module we create and we will find our self freeing it after
+     //creating all module and if we used the same pointer and we passed its pointer then we will found our self 
+     //using the last value assigned to the pointer in the signal and that value is the value of the last module loaded to ui
+     //and dont forget about the free after creation which will make the pointer invalid 
+      int StringLength =strlen(Name)+1;     
+      char *NewName=calloc(sizeof(char),StringLength);
+      strcpy(NewName,Name);       
+      g_signal_connect(Unloadbtn,"clicked",G_CALLBACK(Unload),NewName);
+
+}
+/*
+The Unload btn Signal 
+this method will be fired when the Unload btn Get Clicked
+*/
+void Unload(GtkWidget *widget,gpointer data)
+{
+    GtkWidget *Row = gtk_widget_get_parent(widget);   
+    gtk_container_remove(ModulesContainer,Row);
+   // free(data);
 }
 /*
 this method will Create A Widget That Reperesent THe Kernal Module

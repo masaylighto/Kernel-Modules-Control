@@ -1,4 +1,4 @@
-#include<gtk/gtk.h>
+#include <gtk/gtk.h>
 #include"GtkMethod.h"
 #ifndef H_MainWindow
 #define H_MainWindow
@@ -24,4 +24,9 @@ void SetWidgetToGlobal(GtkBuilder * Builder);
 this method will Create A Widget That Reperesent THe Kernal Module
 */
 GtkGrid* CreateKernelModuleRow();
+/*
+The Unload btn Signal 
+this method will be fired when the Unload btn Get Clicked
+*/
+void Unload(GtkWidget *widget,gpointer data);
 #endif
