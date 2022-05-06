@@ -1,5 +1,7 @@
 #include <gtk/gtk.h>
 #include"GtkMethod.h"
+#include"HelperFunction.h"
+#include <errno.h>
 #ifndef H_MainWindow
 #define H_MainWindow
 

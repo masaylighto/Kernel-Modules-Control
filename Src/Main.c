@@ -6,6 +6,9 @@ char * filePath;
 
 int main ( int argc, char **argv) 
 {   
+    
+    ExitIfNotRoot();
+ 
     filePath=argv[1];
 
     gtk_init (&argc , &argv);  

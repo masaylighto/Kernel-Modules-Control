@@ -102,7 +102,8 @@ void Unload(GtkWidget *widget,gpointer data)
 {
     GtkWidget *Row = gtk_widget_get_parent(widget);   
     gtk_container_remove(ModulesContainer,Row);
-   // free(data);
+    UnloadModule(data);
+    free(data);
 }
 /*
 this method will Create A Widget That Reperesent THe Kernal Module
