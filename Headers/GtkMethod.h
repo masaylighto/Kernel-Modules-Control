@@ -20,4 +20,7 @@ Load Glade File Into Builder if it failed it will close the application
 in this application we only have one window so if it wont load then there is no need for the application to run
 */
 void LoadGladeFile (GtkBuilder * builder,const char* Path);
+void ErrorMessageDialog(GtkWindow * Window ,const char * Text);
+GtkFileChooser* CreateFileDialog(GtkWindow * Window,const char * FilterPattern,const char* FilterName);
+
 #endif

@@ -13,7 +13,17 @@ void LoadMainWindow(GtkBuilder * Builder);
 get all the widgets from GtkBuilder and map them to their signal 
 */
 void GetAndDisplayKernelModule();
+/*
+add new row that repersent the module to the grid
+*/
 void InsertKernelModule(const char * ModuleName);
+/*
+this method used to apply module name to the Row
+*/
+void ConnectUnloadSignal(GtkGrid* Box,const char * Name,int Position);
+/*
+get all the widgets from GtkBuilder and map them to their signal 
+*/
 void MapWidgetsToSignals(GtkBuilder * Builder);
 /*
 The Add btn Signal 
@@ -29,10 +39,16 @@ this method will Create A Widget That Reperesent THe Kernal Module
 */
 GtkGrid* CreateKernelModuleRow();
 /*
+this method used to apply module name to the Row
+*/
+void SetModuleName(GtkGrid* Box , const char * Name);
+/*
 The Unload btn Signal 
 this method will be fired when the Unload btn Get Clicked
 */
 void Unload(GtkWidget *widget,gpointer data);
-GtkFileChooser* CreateFileDialog();
+/*
+get the value that repersent the parameter that will be passed to the  module from the ui
+*/
 const gchar* GetParametersEntryText();
 #endif

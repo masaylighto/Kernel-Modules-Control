@@ -52,3 +52,33 @@ void LoadGladeFile (GtkBuilder * Builder,const char* Path){
          exit(-1);
      }   
 }
+// "Error Failed To unload Module %s",g_strerror (errno)
+void ErrorMessageDialog(GtkWindow * Window ,const char * Text)
+{
+  
+//Create Dialog
+GtkDialog* dialog = GTK_DIALOG(gtk_message_dialog_new (Window,
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_ERROR,
+                                  GTK_BUTTONS_CLOSE,
+                                  Text));
+//Show Dialog
+ gtk_dialog_run (GTK_DIALOG (dialog));
+ //end it's life
+ gtk_widget_destroy (GTK_WIDGET(dialog));
+
+}
+/*
+Create GtkFileChooser to browse for file
+*/
+GtkFileChooser* CreateFileDialog(GtkWindow * Window,const char * FilterPattern,const char* FilterName)
+{
+    //Create GtkFileChooser to browse for file
+    GtkFileChooser* Chooser= GTK_FILE_CHOOSER(gtk_file_chooser_dialog_new("Browse for File",Window,GTK_FILE_CHOOSER_ACTION_OPEN,"Choose",GTK_RESPONSE_ACCEPT,"Close",GTK_RESPONSE_CANCEL,NULL));
+    //Create File Fillter to prevent user from loading file other than the module
+    GtkFileFilter *Filter= gtk_file_filter_new();
+    gtk_file_filter_add_pattern (Filter, FilterPattern);  
+    gtk_file_filter_set_name(Filter,FilterName);
+    gtk_file_chooser_add_filter(Chooser,Filter);    
+    return Chooser;
+}

@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include<stdbool.h>
+
+#include <sys/stat.h>
 #ifndef H_HelperMethod
 #define H_HelperMethod
 /*
@@ -18,5 +20,9 @@ bool loadModule(const char * ModuleName,unsigned long Len, const char *Paramters
 this function make sure you are a superuser or end the application
 */
 void ExitIfNotRoot();
+/*
+get file size
+*/
+long GetFileSize(const char* FilePath);
 
 #endif

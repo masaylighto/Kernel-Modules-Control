@@ -1,6 +1,8 @@
 #include "../Headers/MainWindow.h"
 
 
+
+
 /*
 Repersent the box in the ui that will hold the Modules 
 */
@@ -8,7 +10,7 @@ GtkGrid * ModulesContainer;
 GtkWindow *MainWindow;
 GtkBuilder * Builder;
 void LoadMainWindow(GtkBuilder * _Builder)
-{
+{   
     Builder = _Builder;
     LoadGladeFile(Builder,"Ui/MainWindow.glade" )    ;// load the xml file we want into the Builder
     GtkCssProvider* Css= LoadCssFile("Ui/Css/MainWindow.css");  //Load the Css File
@@ -16,7 +18,7 @@ void LoadMainWindow(GtkBuilder * _Builder)
     MainWindow  =GTK_WINDOW(GetWidget(Builder,"TopWindow"));//get The window the declared inside of the glade file  
     MapWidgetsToSignals(Builder); //get all the widgets from GtkBuilder and map them to their signal 
     SetWidgetToGlobal(Builder);
-    gtk_widget_show_all (MainWindow);//Show The window
+    gtk_widget_show_all (GTK_WIDGET(MainWindow));//Show The window
     GetAndDisplayKernelModule();
 }
 /*
@@ -51,6 +53,9 @@ void SetWidgetToGlobal(GtkBuilder * Builder){
 }
 //this variable will be used to track the next grid place we gonna insert our row into it in InsertKernelModule
 int NextGridRow=0;
+/*
+add new row that repersent the module to the grid
+*/
 void InsertKernelModule(const char * ModuleName){
 
     //Create A Row
@@ -59,7 +64,7 @@ void InsertKernelModule(const char * ModuleName){
     SetModuleName(Row,ModuleName);
     ConnectUnloadSignal(Row,ModuleName,NextGridRow);
     //add Row into Grid
-    gtk_grid_attach(ModulesContainer,Row,0,NextGridRow++,1,1);
+    gtk_grid_attach(ModulesContainer,GTK_WIDGET(Row),0,NextGridRow++,1,1);
     
 }
 /*
@@ -102,11 +107,16 @@ this method will be fired when the Unload btn Get Clicked
 */
 void Unload(GtkWidget *widget,gpointer data)
 {
-    GtkWidget *Row = gtk_widget_get_parent(widget);   
-    gtk_container_remove(ModulesContainer,Row);
-    UnloadModule(data);
-    free(data);
+    if ( UnloadModule(data))
+    {
+        GtkWidget *Row = gtk_widget_get_parent(widget);   
+        gtk_container_remove(GTK_CONTAINER(ModulesContainer),Row);
+        free(data);
+        return;
+    }
+    ErrorMessageDialog(MainWindow,g_strerror(errno));
 }
+
 /*
 this method will Create A Widget That Reperesent THe Kernal Module
 */
@@ -134,35 +144,36 @@ The Add btn Signal
 this method will be fired when the add btn Get Clicked
 */
 void AddBtnClicked(GtkWidget *widget,gpointer data)
-{    
-    GtkFileChooser* Chooser= CreateFileDialog();
+{         
+    GtkFileChooser* Chooser= CreateFileDialog(MainWindow,"*.ko","Kernel Module");
    //show it and return the result
     const gint Result= gtk_dialog_run(GTK_DIALOG(Chooser));
     if(GTK_RESPONSE_ACCEPT!=Result){
-        gtk_widget_destroy(Chooser);
+        gtk_widget_destroy(GTK_WIDGET(Chooser));
         return;
     }    
     char * FileName =gtk_file_chooser_get_filename(Chooser);
-    const gchar* text=GetParametersEntryText();
-    printf("\n %s \n",text);
+    const gchar* Parameters=GetParametersEntryText();
     gtk_widget_destroy(GTK_WIDGET(Chooser));
+    
+    if(!loadModule(FileName,GetFileSize(FileName),Parameters)){
+        ErrorMessageDialog(MainWindow,g_strerror(errno));
+        //free memory
+        g_free((gpointer)Parameters);
+        free(FileName);
+    return;
+    }
+    
+    InsertKernelModule(g_path_get_basename(FileName));
+    //free memory
+    g_free((gpointer)Parameters);
+    free(FileName);
 }
-
+/*
+get the value that repersent the parameter that will be passed to the  module from the ui
+*/
 const gchar* GetParametersEntryText(){
 
     GtkEntry* ParametersEntry = GTK_ENTRY(gtk_builder_get_object(Builder,"ParametersEntry"));
     return gtk_entry_get_text(ParametersEntry);
-}
-/*
-Create GtkFileChooser to browse for file
-*/
-GtkFileChooser* CreateFileDialog(){
-    //Create GtkFileChooser to browse for file
-    GtkFileChooser* Chooser= GTK_FILE_CHOOSER(gtk_file_chooser_dialog_new("Choose module",MainWindow,GTK_FILE_CHOOSER_ACTION_OPEN,"Choose",GTK_RESPONSE_ACCEPT,"Close",GTK_RESPONSE_CANCEL,NULL));
-    //Create File Fillter to prevent user from loading file other than the module
-    GtkFileFilter *Filter= gtk_file_filter_new();
-    gtk_file_filter_add_pattern (Filter, "*.ko");  
-    gtk_file_filter_set_name(Filter,"Kernel Module");
-    gtk_file_chooser_add_filter(Chooser,Filter);    
-    return Chooser;
 }
