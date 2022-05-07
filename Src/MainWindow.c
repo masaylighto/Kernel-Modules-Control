@@ -6,12 +6,14 @@ Repersent the box in the ui that will hold the Modules
 */
 GtkGrid * ModulesContainer;
 GtkWindow *MainWindow;
-void LoadMainWindow(GtkBuilder * Builder)
+GtkBuilder * Builder;
+void LoadMainWindow(GtkBuilder * _Builder)
 {
+    Builder = _Builder;
     LoadGladeFile(Builder,"Ui/MainWindow.glade" )    ;// load the xml file we want into the Builder
     GtkCssProvider* Css= LoadCssFile("Ui/Css/MainWindow.css");  //Load the Css File
     ApplyCss(Css);//apply the Css File
-    MainWindow  = GetWidget(Builder,"TopWindow");//get The window the declared inside of the glade file  
+    MainWindow  =GTK_WINDOW(GetWidget(Builder,"TopWindow"));//get The window the declared inside of the glade file  
     MapWidgetsToSignals(Builder); //get all the widgets from GtkBuilder and map them to their signal 
     SetWidgetToGlobal(Builder);
     gtk_widget_show_all (MainWindow);//Show The window
@@ -65,7 +67,7 @@ this method used to apply module name to the Row
 */
 void SetModuleName(GtkGrid* Box ,const char * Name){
     //get the label from the grid
-  GtkLabel *Label=    gtk_grid_get_child_at(Box,0,0);  
+  GtkLabel *Label=   GTK_LABEL(gtk_grid_get_child_at(Box,0,0));  
   //set the label name
   gtk_label_set_label(Label,Name);
 }
@@ -79,7 +81,7 @@ this method used to apply module name to the Row
 */
 void ConnectUnloadSignal(GtkGrid* Box,const char * Name,int Position){
     //get the label from the grid
-     GtkButton *Unloadbtn=    gtk_grid_get_child_at(Box,2,0);
+     GtkButton *Unloadbtn=   GTK_BUTTON(gtk_grid_get_child_at(Box,2,0));
   
      //we will take the size of the string name then create a new heep allocated string with calloc 
      //then copy the data from the Name to it so we can pass it pointer to the even so it can be used from the event
@@ -139,10 +141,17 @@ void AddBtnClicked(GtkWidget *widget,gpointer data)
     if(GTK_RESPONSE_ACCEPT!=Result){
         gtk_widget_destroy(Chooser);
         return;
-    }
+    }    
     char * FileName =gtk_file_chooser_get_filename(Chooser);
-    printf("\n %s \n",FileName);
-    gtk_widget_destroy(Chooser);
+    const gchar* text=GetParametersEntryText();
+    printf("\n %s \n",text);
+    gtk_widget_destroy(GTK_WIDGET(Chooser));
+}
+
+const gchar* GetParametersEntryText(){
+
+    GtkEntry* ParametersEntry = GTK_ENTRY(gtk_builder_get_object(Builder,"ParametersEntry"));
+    return gtk_entry_get_text(ParametersEntry);
 }
 /*
 Create GtkFileChooser to browse for file

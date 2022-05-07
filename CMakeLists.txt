@@ -13,4 +13,3 @@ target_compile_definitions(Kmc PRIVATE ${GTKMM_CFLAGS_OTHER})
 target_include_directories(Kmc PRIVATE ${GTK_INCLUDE_DIRS})
 
 target_link_libraries(Kmc PRIVATE ${GTK_LIBRARIES})
-

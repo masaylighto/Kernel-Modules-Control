@@ -12,6 +12,8 @@ void LoadMainWindow(GtkBuilder * Builder);
 /*
 get all the widgets from GtkBuilder and map them to their signal 
 */
+void GetAndDisplayKernelModule();
+void InsertKernelModule(const char * ModuleName);
 void MapWidgetsToSignals(GtkBuilder * Builder);
 /*
 The Add btn Signal 
@@ -32,4 +34,5 @@ this method will be fired when the Unload btn Get Clicked
 */
 void Unload(GtkWidget *widget,gpointer data);
 GtkFileChooser* CreateFileDialog();
+const gchar* GetParametersEntryText();
 #endif

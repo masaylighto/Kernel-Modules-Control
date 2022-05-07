@@ -11,6 +11,10 @@ this function make use of syscall to remove Kernel module
 */
 bool UnloadModule(const char * ModuleName);
 /*
+this function make use of syscall to add Kernel module
+*/
+bool loadModule(const char * ModuleName,unsigned long Len, const char *Paramters);
+/*
 this function make sure you are a superuser or end the application
 */
 void ExitIfNotRoot();
