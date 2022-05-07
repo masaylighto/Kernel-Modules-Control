@@ -151,23 +151,31 @@ void AddBtnClicked(GtkWidget *widget,gpointer data)
     if(GTK_RESPONSE_ACCEPT!=Result){
         gtk_widget_destroy(GTK_WIDGET(Chooser));
         return;
-    }    
-    char * FileName =gtk_file_chooser_get_filename(Chooser);
+    }
+    //getting the nodule path from the broswe    
+    const char * ModulePath =gtk_file_chooser_get_filename(Chooser);
+    //getting the paramter that gonna be passed to the module
     const gchar* Parameters=GetParametersEntryText();
+    //slay the widget
     gtk_widget_destroy(GTK_WIDGET(Chooser));
     
-    if(!loadModule(FileName,GetFileSize(FileName),Parameters)){
+    if(!loadModule(ModulePath,GetFileSize(ModulePath),Parameters)){
         ErrorMessageDialog(MainWindow,g_strerror(errno));
         //free memory
         g_free((gpointer)Parameters);
-        free(FileName);
+        if (*ModulePath){
+        free(ModulePath);
+        }
     return;
     }
     
-    InsertKernelModule(g_path_get_basename(FileName));
+    InsertKernelModule(g_path_get_basename(ModulePath));
     //free memory
     g_free((gpointer)Parameters);
-    free(FileName);
+    if (*ModulePath)
+    {
+        free(ModulePath);
+    }   
 }
 /*
 get the value that repersent the parameter that will be passed to the  module from the ui
