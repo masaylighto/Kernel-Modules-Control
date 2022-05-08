@@ -146,6 +146,8 @@ this method will be fired when the add btn Get Clicked
 void AddBtnClicked(GtkWidget *widget,gpointer data)
 {         
     GtkFileChooser* Chooser= CreateFileDialog(MainWindow,"*.ko","Kernel Module");
+    //set default path 
+    gtk_file_chooser_set_current_folder(Chooser,"/lib/modules");
    //show it and return the result
     const gint Result= gtk_dialog_run(GTK_DIALOG(Chooser));
     if(GTK_RESPONSE_ACCEPT!=Result){
@@ -153,25 +155,26 @@ void AddBtnClicked(GtkWidget *widget,gpointer data)
         return;
     }
     //getting the nodule path from the broswe    
-    const char * ModulePath =gtk_file_chooser_get_filename(Chooser);
+    char * ModulePath =gtk_file_chooser_get_filename(Chooser);
+    
     //getting the paramter that gonna be passed to the module
     const gchar* Parameters=GetParametersEntryText();
     //slay the widget
     gtk_widget_destroy(GTK_WIDGET(Chooser));
-    
-    if(!loadModule(ModulePath,GetFileSize(ModulePath),Parameters)){
+    //Trying To load module
+    if(!LoadModule(ModulePath,GetFileSize(ModulePath),Parameters)){
         ErrorMessageDialog(MainWindow,g_strerror(errno));
         //free memory
-        g_free((gpointer)Parameters);
+
         if (*ModulePath){
         free(ModulePath);
         }
     return;
     }
     
-    InsertKernelModule(g_path_get_basename(ModulePath));
+    InsertKernelModule(strtok(g_path_get_basename(ModulePath),"."));
     //free memory
-    g_free((gpointer)Parameters);
+   
     if (*ModulePath)
     {
         free(ModulePath);
