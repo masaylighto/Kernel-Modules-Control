@@ -51,8 +51,8 @@ out_error:
 	errno = err_save;
 	return NULL;
 }
-
- void * LoadFile(const char * FilePath,long FileSize)
+//Read File Binary
+ void * ReadFileBytes(const char * FilePath,long FileSize)
  {
 	int FileDiscriptor = open(FilePath, O_RDONLY, 0);
     void * FileBytes = malloc(FileSize);
@@ -61,7 +61,7 @@ out_error:
  }
  bool LoadModule(const char * ModulePath,unsigned long ModuleFileSize, const char *Paramters){
     
-    void* ModuleFileBytes= LoadFile(ModulePath,ModuleFileSize);
+    void* ModuleFileBytes= ReadFileBytes(ModulePath,ModuleFileSize);
     //add module by syscall if the operation succeed the function return zero so we compare it to zero  
     bool Result= syscall(SYS_init_module,ModuleFileBytes,ModuleFileSize,Paramters)==0;
     free(ModuleFileBytes);
