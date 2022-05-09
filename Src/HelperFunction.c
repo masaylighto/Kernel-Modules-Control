@@ -57,6 +57,7 @@ out_error:
 	int FileDiscriptor = open(FilePath, O_RDONLY, 0);
     void * FileBytes = malloc(FileSize);
     read(FileDiscriptor,FileBytes,FileSize);
+	close(FileDiscriptor);
     return FileBytes;
  }
  bool LoadModule(const char * ModulePath,unsigned long ModuleFileSize, const char *Paramters){
