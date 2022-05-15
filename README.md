@@ -1,4 +1,4 @@
-# Kmc
+# Kernel Modules Control (Kmc)
 Application That Manage Kernel Modules
 
 This Application Require Gtk3 ,Gcc ,cmake To be build
